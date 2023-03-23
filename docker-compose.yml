@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db_pizzeria:
+    image: postgres
+    container_name: db_pizzeria
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    restart: on-failure
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db_pizzeria
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_pizzeria:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: on-failure
